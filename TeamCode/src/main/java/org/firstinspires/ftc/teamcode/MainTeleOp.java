@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name = "MainTeleOp")
 public class MainTeleOp extends LinearOpMode{
@@ -21,31 +22,29 @@ public class MainTeleOp extends LinearOpMode{
     backRight = hardwareMap.get(DcMotor.class,"backRight");
 
     //because motors mounted on opposite sides physically oppose each other.
-    frontRight.setDirection(DcMotor.Direction.REVERSE);
-    backRight.setDirection(DcMotor.Direction.REVERSE);
+    frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+    backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
     //motors resist movement when power is 0
-    frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-    //telemetry update
-    telemetry.addData("Status:","initialized");
-    telemetry.update();
+    for (DcMotor m : new DcMotor[]{frontLeft,frontRight,backLeft,backRight}) {
+      m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
 
     waitForStart();
 
-    //runs until stop is pressed
     while (opModeIsActive()){
-      //left stick controls forwards/backwards
-      double drive = -gamepad1.left_stick_y;
 
-      //right stick controls turning
+      double fwd = -gamepad1.left_stick_y;//stick y is inverted
+      double strafe = gamepad1.left_stick_x;
       double turn = gamepad1.right_stick_x;
 
-      double leftPower = drive + turn;
-      double rightPower = drive - turn;
+      double lfp = fwd+strafe+turn;
+      double rfp = fwd-strafe-turn;
+      double lbp = fwd-strafe+turn;
+      double rbp = fwd+strafe-turn;
+
+      double leftPower = fwd + turn;
+      double rightPower = fwd - turn;
 
       //slow mode by holding left bumper
       double speedMultiplier = 1.0;
@@ -56,16 +55,14 @@ public class MainTeleOp extends LinearOpMode{
       rightPower *= speedMultiplier;
 
       //prevent calculated motor powers from going above 1 or below -1
-      double max = Math.max(
-              Math.abs(leftPower),
-              Math.abs(rightPower)
-      );
+      double max = Math.max((1.0, Math.max(
+              Math.max(Math.abs(lfp),Math.abs(rfp)),
+              Math.max(Math.abs(lbp), Math.abs(rbp))));
 
-      if (max>1.0){
-        leftPower /= max;
-        rightPower /= max;
-      }
-
+      frontLeft.setPower(lfp/max);
+      frontRight.setPower(lfp/max);
+      backLeft.setPower(lfp/max);
+      backRight.setPower(lfp/max);
       //send calculated power to drivetrain motors
       frontLeft.setPower(leftPower);
       backLeft.setPower(leftPower);
@@ -74,7 +71,7 @@ public class MainTeleOp extends LinearOpMode{
       backRight.setPower(rightPower);
 
       //telemetry
-      telemetry.addData("Drive", drive);
+      telemetry.addData("Drive", fwd);
       telemetry.addData("Turn", turn);
       telemetry.addData("Left Power", leftPower);
       telemetry.addData("Right Power", rightPower);
