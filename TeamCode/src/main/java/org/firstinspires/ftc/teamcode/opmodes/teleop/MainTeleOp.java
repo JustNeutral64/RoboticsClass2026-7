@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -55,7 +55,7 @@ public class MainTeleOp extends LinearOpMode{
       rightPower *= speedMultiplier;
 
       //prevent calculated motor powers from going above 1 or below -1
-      double max = Math.max((1.0, Math.max(
+      double max = Math.max((1.0),Math.max(
               Math.max(Math.abs(lfp),Math.abs(rfp)),
               Math.max(Math.abs(lbp), Math.abs(rbp))));
 
