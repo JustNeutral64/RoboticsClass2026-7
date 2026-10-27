@@ -55,7 +55,25 @@ public class Launcher {
                 && Math.abs(right.getVelocity() - LAUNCH_VELOCITY) < VELOCITY_TOLERANCE;
     }
 
-    public double getVelocity() {
+    /**
+     * Returns the left flywheel's velocity in encoder ticks per second.
+     */
+    public double getLeftVelocity() {
         return left.getVelocity();
+    }
+
+    /**
+     * Returns the right flywheel's velocity in encoder ticks per second.
+     */
+    public double getRightVelocity() {
+        return right.getVelocity();
+    }
+
+    /**
+     * Returns the left flywheel's velocity.
+     * Kept for compatibility with existing code.
+     */
+    public double getVelocity() {
+        return getLeftVelocity();
     }
 }
