@@ -24,9 +24,28 @@ public class Intake {
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void in()   { motor.setPower(INTAKE_POWER); }
-    public void out()  { motor.setPower(-INTAKE_POWER); }
-    public void stop() { motor.setPower(0); }
-
-    public void setPower(double power) { motor.setPower(power); }
+        /** Runs the intake inward to collect game elements. */
+    public void in() {
+        motor.setPower(INTAKE_POWER);
+    }
+    
+    /** Reverses the intake to release or eject game elements. */
+    public void out() {
+        motor.setPower(-INTAKE_POWER);
+    }
+    
+    /** Stops the intake motor. */
+    public void stop() {
+        motor.setPower(0);
+    }
+    
+    /**
+     * Sets the intake motor power directly.
+     * Positive values run inward; negative values run outward.
+     *
+     * @param power motor power, normally between -1.0 and 1.0
+     */
+    public void setPower(double power) {
+        motor.setPower(power);
+    }
 }
