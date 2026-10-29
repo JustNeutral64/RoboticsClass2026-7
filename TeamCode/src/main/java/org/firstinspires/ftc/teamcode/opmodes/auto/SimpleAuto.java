@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -7,69 +8,60 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous(name = "Simple Auto")
 public class SimpleAuto extends LinearOpMode {
-    private DcMotor frontLeft,frontRight;
+
+    private DcMotor frontLeft, frontRight;
     private DcMotor backLeft, backRight;
-    private DcMotor shooter,intake;
 
     @Override
-    public void runOpMode(){
-        // Match these names to the Robot Configuration
+    public void runOpMode() {
+
+        // Initialize drivetrain
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
 
-        // removed until we have them
-        //shooter = hardwareMap.get(DcMotor.class, "shooter");
-        //intake = hardwareMap.get(DcMotor.class, "intake");
-
-        // Match the directions from TeleOp
+        // Match these directions to your working TeleOp
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        DcMotor[] driveMotors = {
-                frontLeft,frontRight,backLeft,backRight
+        DcMotor[] motors = {
+                frontLeft, frontRight, backLeft, backRight
         };
 
-        for (DcMotor motor: driveMotors){
+        for (DcMotor motor : motors) {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setZeroPowerBehavior(
+                    DcMotor.ZeroPowerBehavior.BRAKE
+            );
         }
+
         telemetry.addData("Status", "Ready");
         telemetry.update();
 
         waitForStart();
 
-
         if (isStopRequested()) return;
 
-        try{
-            drive(0.2,1000);
+        try {
+            // DRIVE FORWARD
+            frontLeft.setPower(0.20);
+            frontRight.setPower(0.20);
+            backLeft.setPower(0.20);
+            backRight.setPower(0.20);
+
+            // WAIT ONE SECOND
+            sleep(1000);
         }
-        finally{
-            stopDrive();
+        finally {
+            // STOP ALL MOTORS
+            frontLeft.setPower(0);
+            frontRight.setPower(0);
+            backLeft.setPower(0);
+            backRight.setPower(0);
         }
-
-
     }
-    public void drive(double power, long milliseconds){
-        if(!opModeIsActive()) return;
-
-        frontLeft.setPower(power);
-        backRight.setPower(power);
-        backLeft.setPower(power);
-        frontRight.setPower(power);
-
-        sleep(milliseconds);
-
-        stopDrive();
-    }
-
-    public void stopDrive(){
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-        backLeft.setPower(0);
-        backRight.setPower(0);
-    }
-
 }
+
