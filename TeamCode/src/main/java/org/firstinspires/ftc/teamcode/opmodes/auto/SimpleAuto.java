@@ -19,9 +19,9 @@ public class SimpleAuto extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
 
-        // Example mechanism names
-        shooter = hardwareMap.get(DcMotor.class, "shooter");
-        intake = hardwareMap.get(DcMotor.class, "intake");
+        // removed until we have them
+        //shooter = hardwareMap.get(DcMotor.class, "shooter");
+        //intake = hardwareMap.get(DcMotor.class, "intake");
 
         // Match the directions from TeleOp
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -39,14 +39,37 @@ public class SimpleAuto extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        private void drive(double forward, double strafe, double turn, long milliseconds)
+
 
         if (isStopRequested()) return;
 
         try{
-            drive(0.25,0,0,700);
+            drive(0.2,1000);
+        }
+        finally{
+            stopDrive();
         }
 
+
+    }
+    public void drive(double power, long milliseconds){
+        if(!opModeIsActive()) return;
+
+        frontLeft.setPower(power);
+        backRight.setPower(power);
+        backLeft.setPower(power);
+        frontRight.setPower(power);
+
+        sleep(milliseconds);
+
+        stopDrive();
+    }
+
+    public void stopDrive(){
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
     }
 
 }
